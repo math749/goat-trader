@@ -226,7 +226,7 @@ const Login = () => {
             <div className="login-header">
               <div className="login-icon-wrapper">
                 <Shield className="login-icon" size={32} />
-                <span className="login-brand">MATILHA</span>
+                <span className="login-brand">GOAT TRADER</span>
               </div>
               <h2>Acesso Restrito</h2>
               <p>Credenciais exigidas para acessar a infraestrutura.</p>

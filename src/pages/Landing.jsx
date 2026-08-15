@@ -926,7 +926,7 @@ const Landing = () => {
       {/* Navigation */}
       <nav className="cinematic-nav">
         <div className="nav-logo nav-elem">
-          MATILHA <span className="logo-badge">QUANT 3D</span>
+          GOAT TRADER <span className="logo-badge">PRO 3D</span>
         </div>
         <button className="nav-btn nav-elem" onClick={() => navigate('/login')}>
           Acessar Plataforma <LogIn size={16} />

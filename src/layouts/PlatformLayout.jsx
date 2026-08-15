@@ -99,7 +99,7 @@ const PlatformLayout = () => {
         <div className="sidebar-header" style={{ justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <ActivitySquare size={26} color="var(--primary-accent)" />
-            <h1 style={{ fontSize: '1.25rem', letterSpacing: '0.05em', color: 'var(--text-main)' }}>MATILHA</h1>
+            <h1 style={{ fontSize: '1.15rem', fontWeight: 800, letterSpacing: '0.04em', color: 'var(--text-main)' }}>GOAT TRADER</h1>
           </div>
         </div>
 
