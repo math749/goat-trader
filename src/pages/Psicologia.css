@@ -1,0 +1,163 @@
+.psicologia-container {
+  padding: 1.5rem;
+  animation: fadeIn 0.5s ease-in;
+}
+
+.page-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.page-header h2 {
+  color: var(--primary-accent);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.page-header p {
+  color: var(--text-muted);
+  max-width: 600px;
+  margin: 0 auto;
+  font-size: 1.1rem;
+}
+
+.psicologia-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.tactic-panel {
+  background: var(--tactic-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+/* For Psycho cards inside */
+.psicologia-card {
+  background: var(--tactic-card-lighter);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.psicologia-card h4 {
+  color: var(--text-main);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.psicologia-card ul {
+  padding-left: 1.2rem;
+}
+
+.psicologia-card li {
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.bias-list {
+  margin-top: 1rem;
+}
+
+.bias-item {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.bias-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.bias-item h5 {
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bias-item p {
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.dica {
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--primary-accent);
+  margin-top: 0.5rem;
+  display: block;
+}
+
+.exercicios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.exercicio-card {
+  background: var(--tactic-card-lighter);
+  border-radius: 8px;
+  padding: 1.25rem;
+  border-left: 4px solid var(--primary-accent);
+}
+
+.exercicio-card h4 {
+  color: var(--text-main);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.exercicio-card ul {
+  padding-left: 1.2rem;
+}
+
+.exercicio-card li {
+  margin-bottom: 0.4rem;
+  line-height: 1.4;
+}
+
+.recursos-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.recurso-item h4 {
+  color: var(--text-main);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.recurso-item ul {
+  padding-left: 1.2rem;
+}
+
+.recurso-item li {
+  margin-bottom: 0.4rem;
+  line-height: 1.4;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

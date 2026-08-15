@@ -1,0 +1,324 @@
+.ir-container {
+  padding-bottom: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.ir-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.ir-title-group h1 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 0 0.25rem 0;
+}
+
+.ir-title-group p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.ir-month-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--tactic-panel-bg);
+  border: 1px solid var(--tactic-panel-border);
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+}
+
+.ir-month-selector select {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.ir-month-selector select option {
+  background: #0f172a;
+  color: #fff;
+}
+
+/* Grid de Resumo Financeiro */
+.ir-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.ir-card {
+  background: var(--tactic-panel-bg);
+  border: 1px solid var(--tactic-panel-border);
+  border-radius: 14px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.ir-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.ir-card-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ir-card-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.ir-card-sub {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+/* Card Destacado da DARF */
+.darf-highlight-card {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(99, 102, 241, 0.1) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-left: 4px solid #6366f1;
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.15);
+  border-radius: 16px;
+  padding: 1.75rem;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .darf-highlight-card {
+    grid-template-columns: 1fr;
+  }
+}
+
+.darf-info-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.darf-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 20px;
+  width: fit-content;
+}
+
+.darf-badge.pending {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.darf-badge.paid {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.darf-badge.exempt {
+  background: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.darf-amount-huge {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+
+.darf-actions-box {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.darf-field-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.darf-field-row span {
+  color: var(--text-muted);
+}
+
+.darf-field-row strong {
+  color: #fff;
+  font-family: monospace;
+  font-size: 0.95rem;
+}
+
+.darf-btn-group {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-darf-primary {
+  flex: 1;
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.btn-darf-primary:hover {
+  background: #4f46e5;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.btn-darf-secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.btn-darf-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Tabela de Apuração Mensal */
+.ir-table-container {
+  background: var(--tactic-panel-bg);
+  border: 1px solid var(--tactic-panel-border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  overflow-x: auto;
+}
+
+.ir-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.88rem;
+}
+
+.ir-table th {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ir-table td {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: #e2e8f0;
+}
+
+.ir-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.status-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.status-badge.pago { background: rgba(16,185,129,0.15); color: #10b981; }
+.status-badge.pendente { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.status-badge.isento { background: rgba(59,130,246,0.15); color: #3b82f6; }
+.status-badge.prejuizo { background: rgba(239,68,68,0.15); color: #ef4444; }
+
+/* Box Informativo de Dicas Tributárias */
+.ir-tips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.ir-tip-card {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.ir-tip-icon {
+  background: rgba(99, 102, 241, 0.15);
+  color: #818cf8;
+  padding: 0.6rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ir-tip-content h4 {
+  margin: 0 0 0.25rem 0;
+  font-size: 0.92rem;
+  color: #fff;
+}
+
+.ir-tip-content p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #9ca3af;
+  line-height: 1.4;
+}

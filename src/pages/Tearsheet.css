@@ -1,0 +1,148 @@
+.tearsheet-wrapper {
+  background: white;
+  min-height: 100vh;
+  color: #1a1a1a;
+  padding: 2rem;
+  font-family: 'Inter', sans-serif;
+}
+
+.tearsheet-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  background: white;
+}
+
+/* Hide navigation and other elements when printing */
+@media print {
+  @page {
+    size: A4;
+    margin: 1cm;
+  }
+  
+  body {
+    background: white;
+  }
+
+  .sidebar, .platform-layout-header {
+    display: none !important;
+  }
+
+  .platform-layout-content {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+  }
+
+  .tearsheet-wrapper {
+    padding: 0;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
+
+.ts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 2px solid #1a1a1a;
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.ts-title h1 {
+  font-size: 2.5rem;
+  font-weight: 900;
+  margin: 0;
+  color: #1a1a1a;
+  text-transform: uppercase;
+  letter-spacing: -1px;
+}
+
+.ts-title p {
+  color: #666;
+  font-size: 1rem;
+  margin-top: 0.25rem;
+}
+
+.ts-meta {
+  text-align: right;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.ts-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.ts-stat-box {
+  border: 1px solid #e5e5e5;
+  padding: 1.5rem;
+  text-align: center;
+  border-radius: 4px;
+}
+
+.ts-stat-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: #666;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.ts-stat-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #1a1a1a;
+}
+
+.ts-stat-value.positive {
+  color: #10b981;
+}
+
+.ts-stat-value.negative {
+  color: #ef4444;
+}
+
+.ts-section {
+  margin-bottom: 2rem;
+}
+
+.ts-section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.ts-chart-container {
+  height: 300px;
+  width: 100%;
+  border: 1px solid #e5e5e5;
+  border-radius: 4px;
+  padding: 1rem;
+}
+
+.ts-print-btn {
+  background: #1a1a1a;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background 0.2s;
+}
+
+.ts-print-btn:hover {
+  background: #333;
+}

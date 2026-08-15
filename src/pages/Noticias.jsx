@@ -1,0 +1,376 @@
+import { useState, useEffect, useCallback } from 'react';
+import { Newspaper, Calendar, Clock, Globe, AlertTriangle, ExternalLink, RefreshCw, Flame, Shield, Info } from 'lucide-react';
+
+const API_BASE = 'http://127.0.0.1:8000';
+
+const IMPACT_CONFIG = {
+  HIGH:   { label: 'ALTO IMPACTO', color: '#ef4444', bg: 'rgba(239,68,68,0.12)', icon: <Flame size={12}/> },
+  MEDIUM: { label: 'MÉDIO',        color: '#f59e0b', bg: 'rgba(245,158,11,0.12)', icon: <Shield size={12}/> },
+  LOW:    { label: 'BAIXO',        color: '#6b7280', bg: 'rgba(107,114,128,0.1)', icon: <Info size={12}/> },
+  NORMAL: { label: 'NOTÍCIA',      color: '#6366f1', bg: 'rgba(99,102,241,0.1)', icon: <Newspaper size={12}/> },
+};
+
+const COUNTRY_FLAG = { BR: '🇧🇷', US: '🇺🇸', EU: '🇪🇺' };
+
+const STATUS_CONFIG = {
+  SOON:     { label: 'EM BREVE',  color: '#ef4444', pulse: true },
+  RECENT:   { label: 'RECENTE',   color: '#f59e0b', pulse: false },
+  UPCOMING: { label: 'PENDENTE',  color: '#6b7280', pulse: false },
+  DONE:     { label: 'ENCERRADO', color: '#374151', pulse: false },
+};
+
+function ImpactBadge({ impact }) {
+  const cfg = IMPACT_CONFIG[impact] || IMPACT_CONFIG.NORMAL;
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: '3px',
+      background: cfg.bg, color: cfg.color, border: `1px solid ${cfg.color}33`,
+      borderRadius: '4px', padding: '2px 7px', fontSize: '0.63rem', fontWeight: 700,
+      textTransform: 'uppercase', letterSpacing: '0.04em',
+      whiteSpace: 'nowrap',
+    }}>
+      {cfg.icon} {cfg.label}
+    </span>
+  );
+}
+
+function NewsCard({ item }) {
+  const isHigh = item.impact === 'HIGH';
+  return (
+    <a
+      href={item.link}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        display: 'block', textDecoration: 'none',
+        background: isHigh ? 'rgba(239,68,68,0.05)' : 'rgba(255,255,255,0.03)',
+        border: `1px solid ${isHigh ? 'rgba(239,68,68,0.25)' : 'rgba(255,255,255,0.07)'}`,
+        borderRadius: '10px', padding: '14px 16px', marginBottom: '10px',
+        transition: 'all 0.2s',
+        cursor: 'pointer',
+      }}
+      onMouseEnter={e => { e.currentTarget.style.background = isHigh ? 'rgba(239,68,68,0.1)' : 'rgba(255,255,255,0.06)'; e.currentTarget.style.borderColor = isHigh ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.15)'; }}
+      onMouseLeave={e => { e.currentTarget.style.background = isHigh ? 'rgba(239,68,68,0.05)' : 'rgba(255,255,255,0.03)'; e.currentTarget.style.borderColor = isHigh ? 'rgba(239,68,68,0.25)' : 'rgba(255,255,255,0.07)'; }}
+    >
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', justifyContent: 'space-between' }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '6px', flexWrap: 'wrap' }}>
+            <ImpactBadge impact={item.impact} />
+            <span style={{ fontSize: '0.63rem', color: '#6b7280', fontWeight: 500 }}>{item.source}</span>
+            {item.published && (
+              <span style={{
+                fontSize: '0.65rem', fontWeight: 700,
+                color: item.published.includes('Agora') || item.published.includes('min')
+                  ? '#4ade80'
+                  : item.published.includes('Há 1h') || item.published.includes('Há 2h') || item.published.includes('Há 3h')
+                  ? '#f59e0b'
+                  : '#6b7280',
+                background: item.published.includes('Agora') || item.published.includes('min')
+                  ? 'rgba(74,222,128,0.1)'
+                  : 'transparent',
+                borderRadius: '4px',
+                padding: item.published.includes('Agora') || item.published.includes('min') ? '1px 5px' : '0',
+              }}>
+                <Clock size={10} style={{ display: 'inline', marginRight: '3px', verticalAlign: 'middle' }} />
+                {item.published}
+              </span>
+            )}
+          </div>
+          <p style={{ color: isHigh ? '#fca5a5' : '#d1d5db', fontSize: '0.85rem', fontWeight: 600, lineHeight: 1.4, margin: 0, marginBottom: item.summary ? '5px' : 0 }}>
+            {item.title}
+          </p>
+          {item.summary && (
+            <p style={{ color: '#6b7280', fontSize: '0.75rem', margin: 0, lineHeight: 1.5 }}>
+              {item.summary}...
+            </p>
+          )}
+        </div>
+        <ExternalLink size={14} color="#4b5563" style={{ flexShrink: 0, marginTop: '3px' }} />
+      </div>
+    </a>
+  );
+}
+
+function CalendarEventRow({ ev }) {
+  const st = STATUS_CONFIG[ev.status] || STATUS_CONFIG.UPCOMING;
+  const impCfg = IMPACT_CONFIG[ev.impact] || IMPACT_CONFIG.LOW;
+  const isDone = ev.status === 'DONE';
+  const isSoon = ev.status === 'SOON';
+
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: '12px',
+      padding: '11px 14px',
+      background: isSoon ? 'rgba(239,68,68,0.07)' : isDone ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.02)',
+      border: `1px solid ${isSoon ? 'rgba(239,68,68,0.3)' : 'rgba(255,255,255,0.05)'}`,
+      borderRadius: '8px', marginBottom: '6px',
+      opacity: isDone ? 0.45 : 1,
+      transition: 'all 0.2s',
+    }}>
+      {/* Horário */}
+      <div style={{ minWidth: '46px', textAlign: 'center' }}>
+        <span style={{ fontSize: '0.8rem', fontWeight: 700, color: isSoon ? '#ef4444' : isDone ? '#4b5563' : '#9ca3af', fontFamily: 'monospace' }}>
+          {ev.time}
+        </span>
+      </div>
+
+      {/* Indicator */}
+      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: st.color, flexShrink: 0,
+        boxShadow: st.pulse ? `0 0 0 3px ${st.color}44` : 'none',
+        animation: st.pulse ? 'pulse-ring 1.5s ease-in-out infinite' : 'none',
+      }} />
+
+      {/* Conteúdo */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '0.62rem' }}>{COUNTRY_FLAG[ev.country] || '🌐'}</span>
+          <span style={{ color: isDone ? '#4b5563' : '#e5e7eb', fontSize: '0.82rem', fontWeight: 600 }}>
+            {ev.event}
+          </span>
+        </div>
+        {isSoon && ev.minutes_until >= 0 && (
+          <p style={{ margin: '2px 0 0', fontSize: '0.7rem', color: '#ef4444', fontWeight: 700 }}>
+            ⚠️ Em {ev.minutes_until} minuto{ev.minutes_until !== 1 ? 's' : ''} — considere reduzir posição!
+          </p>
+        )}
+      </div>
+
+      {/* Badge impacto */}
+      <span style={{
+        display: 'inline-flex', alignItems: 'center', gap: '3px',
+        background: impCfg.bg, color: impCfg.color, border: `1px solid ${impCfg.color}33`,
+        borderRadius: '4px', padding: '2px 7px', fontSize: '0.6rem', fontWeight: 700,
+        textTransform: 'uppercase', letterSpacing: '0.04em', flexShrink: 0,
+      }}>
+        {impCfg.label}
+      </span>
+    </div>
+  );
+}
+
+export default function Noticias() {
+  const [news, setNews] = useState([]);
+  const [calendar, setCalendar] = useState(null);
+  const [loading, setLoading] = useState({ news: true, calendar: true });
+  const [lastUpdate, setLastUpdate] = useState(null);
+  const [filter, setFilter] = useState('ALL'); // ALL | HIGH | BR | US
+  const [newsError, setNewsError] = useState(null);
+
+  const fetchNews = useCallback(async () => {
+    setLoading(l => ({ ...l, news: true }));
+    setNewsError(null);
+    try {
+      const res = await fetch(`${API_BASE}/news`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      setNews(data.news || []);
+      setLastUpdate(new Date());
+    } catch (e) {
+      setNewsError(e.message);
+      setNews([]);
+    } finally {
+      setLoading(l => ({ ...l, news: false }));
+    }
+  }, []);
+
+  const fetchCalendar = useCallback(async () => {
+    setLoading(l => ({ ...l, calendar: true }));
+    try {
+      const res = await fetch(`${API_BASE}/calendar`);
+      const data = await res.json();
+      setCalendar(data);
+    } catch (e) {
+      console.error('Calendar error:', e);
+    } finally {
+      setLoading(l => ({ ...l, calendar: false }));
+    }
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchNews();
+      fetchCalendar();
+    }, 0);
+    const interval = setInterval(() => { fetchNews(); fetchCalendar(); }, 5 * 60 * 1000);
+    return () => {
+      clearTimeout(timer);
+      clearInterval(interval);
+    };
+  }, [fetchNews, fetchCalendar]);
+
+  const filteredNews = news.filter(n => {
+    if (filter === 'HIGH') return n.impact === 'HIGH';
+    return true;
+  });
+
+  const soonEvent = calendar?.next_high_impact;
+
+  return (
+    <div style={{ background: '#0d0d0f', minHeight: '100vh', padding: '24px', fontFamily: "'Inter', sans-serif" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        @keyframes pulse-ring {
+          0%, 100% { box-shadow: 0 0 0 3px rgba(239,68,68,0.5); }
+          50% { box-shadow: 0 0 0 6px rgba(239,68,68,0.1); }
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        * { box-sizing: border-box; }
+      `}</style>
+
+      {/* Header */}
+      <div style={{ marginBottom: '24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px' }}>
+          <div style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', borderRadius: '10px', padding: '8px', display: 'flex' }}>
+            <Newspaper size={20} color="white" />
+          </div>
+          <h1 style={{ color: '#f9fafb', fontSize: '1.5rem', fontWeight: 800, margin: 0 }}>
+            Notícias & Calendário Econômico
+          </h1>
+        </div>
+        <p style={{ color: '#6b7280', margin: 0, fontSize: '0.85rem' }}>
+          Feed em tempo real • Atualização a cada 5 minutos
+          {lastUpdate && <span> • Atualizado às {lastUpdate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>}
+        </p>
+      </div>
+
+      {/* Alerta de evento de alto impacto iminente */}
+      {soonEvent && soonEvent.status === 'SOON' && (
+        <div style={{
+          background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.5)',
+          borderRadius: '12px', padding: '14px 18px', marginBottom: '20px',
+          display: 'flex', alignItems: 'center', gap: '12px',
+          animation: 'pulse-ring 1.5s ease-in-out infinite',
+        }}>
+          <AlertTriangle size={22} color="#ef4444" style={{ flexShrink: 0 }} />
+          <div>
+            <p style={{ color: '#ef4444', fontWeight: 800, margin: 0, fontSize: '0.9rem' }}>
+              ⚠️ EVENTO DE ALTO IMPACTO EM {soonEvent.minutes_until} MINUTO{soonEvent.minutes_until !== 1 ? 'S' : ''}
+            </p>
+            <p style={{ color: '#fca5a5', margin: '2px 0 0', fontSize: '0.8rem' }}>
+              {COUNTRY_FLAG[soonEvent.country]} {soonEvent.event} — Considere reduzir ou zerar posições!
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Layout principal: 2 colunas */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '20px', alignItems: 'start' }}>
+
+        {/* Coluna Esquerda: Notícias */}
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Newspaper size={16} color="#6366f1" />
+              <h2 style={{ color: '#f9fafb', fontSize: '1rem', fontWeight: 700, margin: 0 }}>
+                Feed de Notícias
+              </h2>
+              {!loading.news && (
+                <span style={{ background: 'rgba(99,102,241,0.15)', color: '#818cf8', borderRadius: '20px', padding: '2px 10px', fontSize: '0.7rem', fontWeight: 700 }}>
+                  {filteredNews.length} notícias
+                </span>
+              )}
+            </div>
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              {/* Filtros */}
+              {['ALL', 'HIGH'].map(f => (
+                <button key={f} onClick={() => setFilter(f)} style={{
+                  padding: '4px 12px', borderRadius: '6px', border: 'none', cursor: 'pointer', fontSize: '0.72rem', fontWeight: 700,
+                  background: filter === f ? '#6366f1' : 'rgba(255,255,255,0.05)', color: filter === f ? 'white' : '#9ca3af',
+                  transition: 'all 0.2s',
+                }}>
+                  {f === 'ALL' ? 'Todas' : '🔴 Alto Impacto'}
+                </button>
+              ))}
+              <button onClick={fetchNews} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', color: '#9ca3af', display: 'flex', alignItems: 'center' }}>
+                <RefreshCw size={13} style={{ animation: loading.news ? 'spin 1s linear infinite' : 'none' }} />
+              </button>
+            </div>
+          </div>
+
+          {loading.news ? (
+            <div style={{ textAlign: 'center', padding: '60px', color: '#6b7280' }}>
+              <RefreshCw size={28} style={{ animation: 'spin 1s linear infinite', marginBottom: '12px' }} />
+              <p style={{ margin: 0 }}>Buscando notícias...</p>
+            </div>
+          ) : newsError ? (
+            <div style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '10px', padding: '20px', textAlign: 'center', color: '#fca5a5' }}>
+              <AlertTriangle size={24} style={{ marginBottom: '8px' }} />
+              <p style={{ margin: 0, fontWeight: 600 }}>Backend indisponível</p>
+              <p style={{ margin: '4px 0 0', fontSize: '0.78rem', color: '#6b7280' }}>Inicie o servidor Python: <code>python market_api.py</code></p>
+            </div>
+          ) : filteredNews.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280' }}>
+              <Newspaper size={32} style={{ marginBottom: '12px', opacity: 0.4 }} />
+              <p style={{ margin: 0 }}>Nenhuma notícia encontrada</p>
+            </div>
+          ) : (
+            <div>{filteredNews.map((item, i) => <NewsCard key={i} item={item} />)}</div>
+          )}
+        </div>
+
+        {/* Coluna Direita: Calendário */}
+        <div>
+          <div style={{ position: 'sticky', top: '20px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+              <Calendar size={16} color="#f59e0b" />
+              <h2 style={{ color: '#f9fafb', fontSize: '1rem', fontWeight: 700, margin: 0 }}>
+                Calendário do Dia
+              </h2>
+              {calendar && (
+                <span style={{ background: 'rgba(245,158,11,0.12)', color: '#f59e0b', borderRadius: '20px', padding: '2px 10px', fontSize: '0.7rem', fontWeight: 700 }}>
+                  {calendar.weekday}
+                </span>
+              )}
+            </div>
+
+            {/* Info do pregão */}
+            {calendar && (
+              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '10px', padding: '12px 14px', marginBottom: '12px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ color: '#9ca3af', fontSize: '0.8rem', fontWeight: 500 }}>
+                    <Globe size={12} style={{ display: 'inline', marginRight: '5px', verticalAlign: 'middle' }} />
+                    {calendar.date} — {calendar.weekday}
+                  </span>
+                  <span style={{
+                    background: calendar.market_open ? 'rgba(34,197,94,0.12)' : 'rgba(239,68,68,0.12)',
+                    color: calendar.market_open ? '#4ade80' : '#f87171',
+                    border: `1px solid ${calendar.market_open ? '#4ade8033' : '#f8717133'}`,
+                    borderRadius: '5px', padding: '2px 8px', fontSize: '0.65rem', fontWeight: 800,
+                  }}>
+                    {calendar.market_open ? '● PREGÃO ABERTO' : '● PREGÃO FECHADO'}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {loading.calendar ? (
+              <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280' }}>
+                <RefreshCw size={22} style={{ animation: 'spin 1s linear infinite' }} />
+              </div>
+            ) : calendar ? (
+              <div>
+                {calendar.events.map((ev, i) => <CalendarEventRow key={i} ev={ev} />)}
+              </div>
+            ) : (
+              <div style={{ textAlign: 'center', padding: '30px', color: '#6b7280' }}>
+                <p>Servidor offline</p>
+              </div>
+            )}
+
+            {/* Legenda */}
+            <div style={{ marginTop: '14px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', padding: '10px 14px' }}>
+              <p style={{ color: '#4b5563', fontSize: '0.7rem', fontWeight: 700, margin: '0 0 6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Legenda</p>
+              {[['#ef4444', 'Em breve (≤30min)'], ['#f59e0b', 'Recente (<60min)'], ['#6b7280', 'Pendente'], ['#374151', 'Encerrado']].map(([color, label]) => (
+                <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '4px' }}>
+                  <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: color, flexShrink: 0 }} />
+                  <span style={{ color: '#6b7280', fontSize: '0.72rem' }}>{label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+}

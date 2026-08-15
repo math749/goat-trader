@@ -1,0 +1,229 @@
+.calc-container {
+  padding-bottom: 2rem;
+}
+
+/* Painel Principal de Configuração */
+.cockpit-panel {
+  background: var(--tactic-panel-bg);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--tactic-panel-border);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.cockpit-panel h3 {
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #fff;
+}
+
+/* Customização pesada dos inputs */
+.tactic-input {
+  background: var(--tactic-input-bg);
+  border: 1px solid var(--tactic-input-border);
+  color: var(--text-main);
+  padding: 1rem;
+  border-radius: 8px;
+  font-family: 'Inter', monospace;
+  font-size: 1.25rem;
+  font-weight: bold;
+  outline: none;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.tactic-input:focus {
+  border-color: var(--primary-accent);
+  box-shadow: 0 0 15px rgba(129, 140, 248, 0.2);
+}
+
+.tactic-input.danger-input:focus {
+  border-color: var(--tactic-text-danger);
+  box-shadow: var(--tactic-shadow-danger);
+}
+
+.tactic-input.success-input:focus {
+  border-color: var(--tactic-text-success);
+  box-shadow: var(--tactic-shadow-success);
+}
+
+/* Range Sliders */
+.tactic-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  background: var(--tactic-input-bg);
+  border-radius: 4px;
+  outline: none;
+  border: 1px solid var(--tactic-input-border);
+  margin-top: 0.5rem;
+}
+
+.tactic-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--primary-accent);
+  cursor: pointer;
+  border: 2px solid var(--text-main);
+  box-shadow: var(--tactic-shadow-primary);
+  transition: all 0.2s ease;
+}
+
+.tactic-slider.danger-slider::-webkit-slider-thumb {
+  background: var(--tactic-text-danger);
+  box-shadow: var(--tactic-shadow-danger);
+}
+
+.tactic-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+/* Painel Anti-Ruína */
+.ruin-panel {
+  background: var(--tactic-panel-bg);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--tactic-panel-border);
+  border-radius: 16px;
+  padding: 2rem;
+  transition: all 0.3s ease;
+}
+
+.ruin-panel.safe {
+  border-left: 4px solid var(--tactic-text-success);
+}
+
+.ruin-panel.critical {
+  border: 1px solid var(--tactic-text-danger);
+  border-left: 4px solid var(--tactic-text-danger);
+  background: var(--tactic-glow-danger);
+  animation: pulse-danger 2s infinite;
+}
+
+/* KPI Panel (Velocímetro) */
+.speedometer-card {
+  padding: 2.5rem 2rem;
+  border-radius: 16px;
+  background: var(--tactic-panel-bg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.speedometer-card.safe {
+  border: 1px solid var(--tactic-text-success);
+  background: var(--tactic-panel-bg);
+  box-shadow: var(--tactic-shadow-success);
+}
+
+.speedometer-card.critical {
+  border: 1px solid var(--tactic-text-danger);
+  background: var(--tactic-panel-bg);
+  box-shadow: var(--tactic-shadow-danger);
+}
+
+.speedometer-value {
+  font-size: 5.5rem;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  margin: 1rem 0;
+}
+
+.speedometer-card.safe .speedometer-value {
+  color: var(--tactic-text-success);
+}
+
+.speedometer-card.critical .speedometer-value {
+  color: var(--tactic-text-danger);
+}
+
+/* Payoff Bar */
+.payoff-bar-container {
+  width: 100%;
+  height: 8px;
+  background: rgba(239, 68, 68, 0.2); /* Fundo vermelho do risco */
+  border-radius: 4px;
+  margin-top: 1rem;
+  overflow: hidden;
+  display: flex;
+}
+
+.payoff-bar-risk {
+  height: 100%;
+  background: var(--danger);
+}
+
+.payoff-bar-reward {
+  height: 100%;
+  background: var(--success);
+}
+
+/* Breakdown List */
+.breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--tactic-panel-border);
+  font-family: 'Inter', monospace;
+}
+
+.breakdown-row:last-child {
+  border-bottom: none;
+}
+
+/* Animations */
+@keyframes pulse-danger {
+  0% {
+    box-shadow: 0 0 0 0 var(--tactic-glow-danger);
+  }
+  70% {
+    box-shadow: 0 0 0 15px rgba(239, 68, 68, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+/* Enhanced Glassmorphism & Hover Micro-Interactions */
+.speedometer-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.speedometer-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--primary-accent), transparent);
+  opacity: 0.7;
+}
+
+.speedometer-card:hover {
+  transform: translateY(-4px) scale(1.01);
+}
+
+.breakdown-row {
+  transition: background-color 0.2s ease, padding-left 0.2s ease;
+  border-radius: 6px;
+}
+
+.breakdown-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
