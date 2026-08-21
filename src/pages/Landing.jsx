@@ -926,7 +926,7 @@ const Landing = () => {
       {/* Navigation */}
       <nav className="cinematic-nav">
         <div className="nav-logo nav-elem" style={{ cursor: 'pointer' }} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-          GOAT TRADER <span className="logo-badge">PRO 3D</span>
+          GOAT TRADER <span className="logo-badge" style={{ background: 'linear-gradient(135deg, #38bdf8 0%, #8b5cf6 100%)', color: '#ffffff', fontWeight: 800, padding: '3px 10px', borderRadius: '20px', fontSize: '0.65rem' }}>INSTITUTIONAL AI 2.5</span>
         </div>
 
         <div className="nav-links nav-elem">

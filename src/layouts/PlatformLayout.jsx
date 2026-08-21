@@ -140,7 +140,9 @@ const PlatformLayout = () => {
         <div className="sidebar-header" style={{ justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <ActivitySquare size={26} color="var(--primary-accent)" />
-            <h1 style={{ fontSize: '1.15rem', fontWeight: 800, letterSpacing: '0.04em', color: 'var(--text-main)' }}>GOAT TRADER</h1>
+            <h1 style={{ fontSize: '1.15rem', fontWeight: 800, letterSpacing: '0.04em', color: 'var(--text-main)', margin: 0 }}>
+              GOAT TRADER <span style={{ fontSize: '0.6rem', fontWeight: 800, padding: '2px 8px', background: 'linear-gradient(135deg, #38bdf8, #3b82f6)', color: '#0f172a', borderRadius: '12px', verticalAlign: 'middle', marginLeft: '4px', textTransform: 'uppercase' }}>PRO QUANT</span>
+            </h1>
           </div>
           <button 
             className="mobile-close-btn"
