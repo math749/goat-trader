@@ -25,7 +25,9 @@ import {
   FileText,
   Brain,
   Search,
-  Award
+  Award,
+  Menu,
+  X
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -36,7 +38,8 @@ const PlatformLayout = () => {
   const location = useLocation();
   const outlet = useOutlet();
   const [isCmdPaletteOpen, setIsCmdPaletteOpen] = useState(false);
-  
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
@@ -94,13 +97,48 @@ const PlatformLayout = () => {
         navItems={flatNavItems} 
       />
 
+      {/* Mobile Top Header Bar */}
+      <header className="mobile-header">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+          <ActivitySquare size={22} color="var(--primary-accent)" />
+          <span style={{ fontSize: '1rem', fontWeight: 800, letterSpacing: '0.04em', color: 'var(--text-main)' }}>GOAT TRADER</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <button 
+            onClick={() => setIsCmdPaletteOpen(true)}
+            aria-label="Buscar"
+            className="mobile-header-btn"
+          >
+            <Search size={18} />
+          </button>
+          <button 
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Menu"
+            className="mobile-header-btn"
+          >
+            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+      </header>
+
+      {/* Mobile Backdrop Overlay */}
+      {isMobileMenuOpen && (
+        <div className="mobile-drawer-overlay" onClick={() => setIsMobileMenuOpen(false)} />
+      )}
+
       {/* Sidebar */}
-      <aside className="sidebar glass-panel" style={{ backgroundColor: 'var(--tactic-sidebar)', borderRight: '1px solid var(--border-subtle)' }}>
+      <aside className={`sidebar glass-panel ${isMobileMenuOpen ? 'mobile-open' : ''}`} style={{ backgroundColor: 'var(--tactic-sidebar)', borderRight: '1px solid var(--border-subtle)' }}>
         <div className="sidebar-header" style={{ justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <ActivitySquare size={26} color="var(--primary-accent)" />
             <h1 style={{ fontSize: '1.15rem', fontWeight: 800, letterSpacing: '0.04em', color: 'var(--text-main)' }}>GOAT TRADER</h1>
           </div>
+          <button 
+            className="mobile-close-btn"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <X size={18} />
+          </button>
         </div>
 
         {/* Command Palette Trigger Button */}
@@ -159,6 +197,7 @@ const PlatformLayout = () => {
                     key={item.path} 
                     to={item.path} 
                     end={item.path === '/app'}
+                    onClick={() => setIsMobileMenuOpen(false)}
                     className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
                     style={{ fontSize: '0.85rem', padding: '0.5rem 0.75rem' }}
                   >
