@@ -1249,6 +1249,16 @@ const Landing = () => {
           </Link>
         </div>
       </section>
+
+      {/* Floating Mobile Sticky CTA Bar */}
+      <div className="mobile-sticky-bar">
+        <button 
+          className="mobile-sticky-btn"
+          onClick={() => navigate('/login?mode=register')}
+        >
+          ⚡ TESTAR 5 DIAS VIP GRÁTIS <ArrowRight size={18} />
+        </button>
+      </div>
     </main>
   );
 };

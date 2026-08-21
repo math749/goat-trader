@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { TradeProvider } from './contexts/TradeContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -9,6 +9,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Termos from './pages/Termos';
+import Obrigado from './pages/Obrigado';
+import NotFound from './pages/NotFound';
 
 // Private Pages (App)
 import DashboardHome from './pages/DashboardHome';
@@ -43,6 +45,7 @@ function App() {
               <Route path="/" element={<Landing />} />
               <Route path="/login" element={<Login />} />
               <Route path="/termos" element={<Termos />} />
+              <Route path="/obrigado" element={<Obrigado />} />
 
               {/* Protected App Routes */}
               <Route path="/app" element={<ProtectedRoute />}>
@@ -69,8 +72,8 @@ function App() {
                 </Route>
               </Route>
 
-              {/* Fallback */}
-              <Route path="*" element={<Navigate to="/" replace />} />
+              {/* Fallback 404 */}
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
         </TradeProvider>
