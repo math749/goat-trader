@@ -3,18 +3,34 @@
  */
 
 const TRIAL_DAYS = 5;
+const ADMIN_EMAILS = ['matheusben749@gmail.com', 'admin@goattrader.com'];
+
+/**
+ * Verifica se o usuário é o Administrador Principal
+ */
+export const isAdminUser = (user) => {
+  if (!user) return false;
+  if (user.is_admin === true || user.role === 'admin') return true;
+  if (user.email && ADMIN_EMAILS.includes(user.email.toLowerCase().trim())) return true;
+  return false;
+};
 
 /**
  * Calcula os dias e horas restantes do teste grátis VIP
  */
 export const getTrialStatus = (user) => {
   if (!user) {
-    return { isTrial: false, isExpired: false, daysLeft: 0, hoursLeft: 0, isPro: false };
+    return { isTrial: false, isExpired: false, daysLeft: 0, hoursLeft: 0, isPro: false, isAdmin: false };
+  }
+
+  // Administrador Master tem acesso total e permanente ilimitado
+  if (isAdminUser(user)) {
+    return { isTrial: false, isExpired: false, daysLeft: 999, hoursLeft: 24, isPro: true, isAdmin: true };
   }
 
   // Se o usuário tem assinatura ativa (pro / active)
   if (user.subscription_status === 'active' || user.is_pro === true) {
-    return { isTrial: false, isExpired: false, daysLeft: 0, hoursLeft: 0, isPro: true };
+    return { isTrial: false, isExpired: false, daysLeft: 0, hoursLeft: 0, isPro: true, isAdmin: false };
   }
 
   const createdAt = user.created_at ? new Date(user.created_at) : new Date();

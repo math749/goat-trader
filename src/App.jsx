@@ -29,6 +29,7 @@ import QuantRadar from './pages/QuantRadar';
 import Noticias from './pages/Noticias';
 import ImpostoRenda from './pages/ImpostoRenda';
 import Psicologia from './pages/Psicologia';
+import Admin from './pages/Admin';
 import './index.css';
 
 function App() {
@@ -64,6 +65,7 @@ function App() {
                   <Route path="noticias" element={<Noticias />} />
                   <Route path="imposto" element={<ImpostoRenda />} />
                   <Route path="psicologia" element={<Psicologia />} />
+                  <Route path="admin" element={<Admin />} />
                 </Route>
               </Route>
 

@@ -26,11 +26,12 @@ import {
   Brain,
   Search,
   Menu,
-  X
+  X,
+  Crown
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { getTrialStatus, PRICING_CONFIG } from '../services/trialService';
+import { getTrialStatus, PRICING_CONFIG, isAdminUser } from '../services/trialService';
 
 const PlatformLayout = () => {
   const { user, logout } = useAuth();
@@ -85,6 +86,15 @@ const PlatformLayout = () => {
       ]
     }
   ];
+
+  if (isAdminUser(user)) {
+    navGroups.push({
+      title: 'ADMINISTRADOR',
+      items: [
+        { path: '/app/admin', label: 'Painel Admin Master', icon: <Crown size={18} color="#fbbf24" /> }
+      ]
+    });
+  }
 
   const flatNavItems = navGroups.flatMap(g => g.items);
 
