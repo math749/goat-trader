@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { Shield, ArrowRight, Lock, User, ArrowLeft, Activity, TrendingUp, DollarSign } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import gsap from 'gsap';
@@ -7,7 +7,18 @@ import { useGSAP } from '@gsap/react';
 import './Login.css';
 
 const Login = () => {
+  const location = useLocation();
   const [isLogin, setIsLogin] = useState(true);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const mode = params.get('mode');
+    if (mode === 'register') {
+      setTimeout(() => setIsLogin(false), 0);
+    } else if (mode === 'login') {
+      setTimeout(() => setIsLogin(true), 0);
+    }
+  }, [location]);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -228,8 +239,8 @@ const Login = () => {
                 <Shield className="login-icon" size={32} />
                 <span className="login-brand">GOAT TRADER</span>
               </div>
-              <h2>Acesso Restrito</h2>
-              <p>Credenciais exigidas para acessar a infraestrutura.</p>
+              <h2>{isLogin ? 'Entrar no Cockpit' : 'Criar Conta Grátis'}</h2>
+              <p>{isLogin ? 'Acesse seu cockpit de alta performance e gestão de risco.' : 'Cadastre-se em 30s. Trades ilimitados + 5 Dias de Acesso VIP à IA!'}</p>
             </div>
             
             <div className="auth-tabs">
@@ -237,13 +248,13 @@ const Login = () => {
                 className={`auth-tab ${isLogin ? 'active' : ''}`}
                 onClick={() => toggleMode('login')}
               >
-                Entrar
+                Entrar na Conta
               </div>
               <div 
                 className={`auth-tab ${!isLogin ? 'active' : ''}`}
                 onClick={() => toggleMode('register')}
               >
-                Solicitar Acesso
+                Criar Conta (5 Dias VIP)
               </div>
             </div>
 

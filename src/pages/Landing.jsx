@@ -924,13 +924,32 @@ const Landing = () => {
       <CustomCursor />
 
       {/* Navigation */}
-      <nav className="cinematic-nav">
-        <div className="nav-logo nav-elem">
+      <nav className="cinematic-nav" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.2rem 3rem' }}>
+        <div className="nav-logo nav-elem" style={{ cursor: 'pointer' }} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
           GOAT TRADER <span className="logo-badge">PRO 3D</span>
         </div>
-        <button className="nav-btn nav-elem" onClick={() => navigate('/login')}>
-          Acessar Plataforma <LogIn size={16} />
-        </button>
+
+        <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+          <a href="#recursos" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600, transition: 'color 0.2s' }}>Recursos</a>
+          <a href="#planos" style={{ color: '#38bdf8', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 700, transition: 'color 0.2s' }}>Planos & Preços</a>
+        </div>
+
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <button 
+            className="nav-btn nav-elem" 
+            onClick={() => navigate('/login?mode=login')}
+            style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#ffffff' }}
+          >
+            Entrar <LogIn size={16} />
+          </button>
+          <button 
+            className="nav-btn nav-elem" 
+            onClick={() => navigate('/login?mode=register')}
+            style={{ background: 'linear-gradient(135deg, #38bdf8, #3b82f6)', color: '#0f172a', fontWeight: 800, border: 'none' }}
+          >
+            Criar Conta Grátis
+          </button>
+        </div>
       </nav>
 
       {/* Live Market Ticker */}
@@ -1096,6 +1115,103 @@ const Landing = () => {
       {/* Interactive GOAT IA Demo & Tearsheet */}
       <GoatAiInteractiveDemo />
       <TearsheetPreview />
+
+      {/* Seção Transparente de Planos & Precificação */}
+      <section id="planos" style={{ padding: '6rem 2rem', background: '#0b0f19', borderTop: '1px solid rgba(255,255,255,0.05)', position: 'relative' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto', textAlign: 'center' }}>
+          <span className="section-badge" style={{ background: 'rgba(56,189,248,0.1)', color: '#38bdf8', border: '1px solid rgba(56,189,248,0.3)', padding: '6px 14px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase' }}>
+            ⚡ TRANSPARÊNCIA TOTAL
+          </span>
+          <h2 style={{ color: '#ffffff', fontSize: '2.5rem', fontWeight: 800, marginTop: '1rem', marginBottom: '0.5rem' }}>
+            Planos & Precificação Sem Surpresas
+          </h2>
+          <p style={{ color: '#94a3b8', fontSize: '1.05rem', maxWidth: '650px', margin: '0 auto 3.5rem' }}>
+            Registre seus trades gratuitamente para sempre ou liberte todo o poder da inteligência artificial para proteger seu patrimônio.
+          </p>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem', alignItems: 'stretch' }}>
+            
+            {/* Card Plano Starter */}
+            <div style={{
+              background: 'rgba(15, 23, 42, 0.6)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              borderRadius: '20px',
+              padding: '2.5rem 2rem',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              textAlign: 'left',
+              backdropFilter: 'blur(12px)'
+            }}>
+              <div>
+                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#94a3b8', letterSpacing: '0.08em', textTransform: 'uppercase' }}>PLANO STARTER</span>
+                <h3 style={{ fontSize: '1.8rem', color: '#ffffff', margin: '0.5rem 0 1rem', fontWeight: 800 }}>Gratuito</h3>
+                <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#ffffff', marginBottom: '1.5rem', fontFamily: 'monospace' }}>
+                  R$ 0 <span style={{ fontSize: '0.9rem', color: '#64748b', fontWeight: 400 }}>/ para sempre</span>
+                </div>
+                <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 2rem 0', display: 'flex', flexDirection: 'column', gap: '0.85rem', color: '#cbd5e1', fontSize: '0.92rem' }}>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><CheckCircle2 size={16} color="#10b981" /> <strong>Trades 100% Ilimitados</strong></li>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><CheckCircle2 size={16} color="#10b981" /> Importação ProfitChart & MT5 ilimitada</li>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><CheckCircle2 size={16} color="#10b981" /> Diário de Bordo & Calendário Econômico</li>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><CheckCircle2 size={16} color="#10b981" /> Relatórios de PnL e Win Rate básico</li>
+                </ul>
+              </div>
+              <button 
+                onClick={() => navigate('/login?mode=register')}
+                style={{ width: '100%', background: 'rgba(255, 255, 255, 0.08)', color: '#ffffff', border: '1px solid rgba(255, 255, 255, 0.15)', padding: '1rem', borderRadius: '10px', fontWeight: 700, cursor: 'pointer', fontSize: '0.95rem', transition: 'all 0.2s' }}
+              >
+                Criar Conta Grátis
+              </button>
+            </div>
+
+            {/* Card Plano GOAT PRO & QUANT */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%)',
+              border: '2px solid #38bdf8',
+              borderRadius: '20px',
+              padding: '2.5rem 2rem',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              textAlign: 'left',
+              position: 'relative',
+              boxShadow: '0 0 40px rgba(56, 189, 248, 0.2)',
+              backdropFilter: 'blur(12px)'
+            }}>
+              <div style={{ position: 'absolute', top: '-14px', right: '2rem', background: 'linear-gradient(135deg, #38bdf8, #3b82f6)', color: '#0f172a', fontWeight: 800, fontSize: '0.72rem', padding: '4px 12px', borderRadius: '20px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                ⭐ RECOMENDADO DA MATILHA
+              </div>
+
+              <div>
+                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#38bdf8', letterSpacing: '0.08em', textTransform: 'uppercase' }}>GOAT PRO & QUANT</span>
+                <h3 style={{ fontSize: '1.8rem', color: '#ffffff', margin: '0.5rem 0 0.2rem', fontWeight: 800 }}>Plano Único VIP</h3>
+                <p style={{ color: '#10b981', fontWeight: 700, fontSize: '0.85rem', margin: '0 0 1rem 0' }}>⚡ TESTE GRATUITAMENTE POR 5 DIAS</p>
+                
+                <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#38bdf8', marginBottom: '1.5rem', fontFamily: 'monospace' }}>
+                  R$ 47 <span style={{ fontSize: '0.9rem', color: '#94a3b8', fontWeight: 400 }}>/ mês</span>
+                </div>
+                
+                <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 2rem 0', display: 'flex', flexDirection: 'column', gap: '0.85rem', color: '#f1f5f9', fontSize: '0.92rem' }}>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><CheckCircle2 size={16} color="#38bdf8" /> <strong>Tudo do Plano Starter +</strong></li>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><CheckCircle2 size={16} color="#38bdf8" /> <strong>GOAT IA 2.5</strong> (Mentoria Comportamental 24/7)</li>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><CheckCircle2 size={16} color="#38bdf8" /> Esquadrão Multi-Agente <strong>FinRobot</strong></li>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><CheckCircle2 size={16} color="#38bdf8" /> Radar de Sentimento <strong>FinGPT</strong> ao vivo</li>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><CheckCircle2 size={16} color="#38bdf8" /> <strong>Trava de Drawdown em Tempo Real</strong> & Modo Vigia</li>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><CheckCircle2 size={16} color="#38bdf8" /> Calculadora de IR (DARF 6015) & Laboratório Quant</li>
+                </ul>
+              </div>
+
+              <button 
+                onClick={() => navigate('/login?mode=register')}
+                style={{ width: '100%', background: 'linear-gradient(135deg, #38bdf8, #3b82f6)', color: '#0f172a', border: 'none', padding: '1rem', borderRadius: '10px', fontWeight: 800, cursor: 'pointer', fontSize: '1rem', transition: 'all 0.2s', boxShadow: '0 8px 25px rgba(56, 189, 248, 0.3)' }}
+              >
+                Testar 5 Dias Grátis Agora <ArrowRight size={18} style={{ verticalAlign: 'middle' }} />
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </section>
 
       {/* Scrubbing Text Reveal Section (gpt-taste) */}
       <section className="scrub-section">
