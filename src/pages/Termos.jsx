@@ -44,16 +44,26 @@ const Termos = () => {
         </div>
 
         <div className="termos-section">
-          <h3>4. Assinaturas, Pagamentos e Cancelamento</h3>
-          <p>A plataforma opera sob o modelo de assinatura recorrente (mensal ou anual):</p>
+          <h3>4. Política de Devolução & Garantia de 7 Dias (CDC Art. 49)</h3>
+          <p>Oferecemos garantia de satisfação incondicional para novos assinantes do Plano GOAT PRO & QUANT:</p>
           <ul>
-            <li>O cancelamento pode ser efetuado a qualquer momento através do painel do usuário ou portal de pagamento.</li>
-            <li>Em conformidade com o Código de Defesa do Consumidor (Art. 49), o usuário tem o direito de solicitar o reembolso integral em até 7 (sete) dias após a primeira assinatura.</li>
+            <li><strong>Direito de Arrependimento:</strong> Em conformidade com o Artigo 49 do Código de Defesa do Consumidor, você pode solicitar o cancelamento e reembolso integral de 100% do valor pago em até <strong>7 (sete) dias corridos</strong> após a contratação.</li>
+            <li><strong>Estorno Simplificado:</strong> Para assinaturas pagas via PIX ou Cartão no Mercado Pago, o reembolso é processado na mesma modalidade de pagamento em até 24 horas úteis sem taxas adicionais.</li>
+            <li><strong>Cancelamento sem Multa:</strong> Não há fidelidade obrigatória. Você pode cancelar a renovação da sua assinatura mensal a qualquer momento sem qualquer tipo de multa ou penalidade.</li>
           </ul>
         </div>
 
         <div className="termos-section">
-          <h3>5. Direitos de Propriedade Intelectual</h3>
+          <h3>5. Política de Conta do Usuário & Teste VIP de 5 Dias</h3>
+          <ul>
+            <li><strong>Plano Starter Gratuito:</strong> O registro de trades e importação de relatórios do ProfitChart/MT5 são 100% gratuitos e ilimitados.</li>
+            <li><strong>5 Dias de Teste VIP:</strong> Todo novo usuário cadastrado recebe 5 dias corridos de degustação gratuita dos recursos avançados de IA (GOAT IA 2.5, FinGPT e Trava de Risco).</li>
+            <li><strong>Uso Responsável:</strong> É proibido compartilhar credenciais de acesso com terceiros, tentar realizar engenharia reversa dos algoritmos ou utilizar robôs maliciosos na plataforma.</li>
+          </ul>
+        </div>
+
+        <div className="termos-section">
+          <h3>6. Direitos de Propriedade Intelectual</h3>
           <p>Todo o código-fonte, algoritmos de inteligência artificial (FinGPT, FinRobot), marcas, logos e interfaces visuais do GOAT TRADER são de propriedade exclusiva dos seus desenvolvedores e protegidos por leis internacionais de direitos autorais.</p>
         </div>
 
