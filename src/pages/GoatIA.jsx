@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Bot, MessageSquare, Zap, ShieldAlert, AlertOctagon, Settings, Send, Star, Trash2, Activity, Target, ShieldCheck, Shield, ShieldOff, ChevronDown, ChevronUp } from 'lucide-react';
 import { useTrades } from '../contexts/TradeContext';
 import { askGeminiMentorStream, askGeminiProactive } from '../services/gemini';
+import { getFinRobotAgentsInsight } from '../services/finGptService';
 import ReactMarkdown from 'react-markdown';
 
 const GoatIA = () => {
@@ -9,6 +10,7 @@ const GoatIA = () => {
   const iaInsights = useMemo(() => getIAInsights(), [getIAInsights]);
   const { toxicHour, currentDrawdownAlert, dailyDrawdownLimit, setDailyDrawdownLimit } = iaInsights;
   const metrics = useMemo(() => getMetrics(), [getMetrics]);
+  const finRobotAgents = useMemo(() => getFinRobotAgentsInsight(trades, metrics), [trades, metrics]);
   
   const [showSettings, setShowSettings] = useState(false);
   
@@ -330,7 +332,46 @@ const GoatIA = () => {
         {/* Painel Esquerdo: Insights e Regras ou Radar Quant */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', overflowY: 'auto', paddingRight: '0.5rem' }}>
           
-
+          {/* Esquadrão FinRobot Multi-Agente (AI4Finance Inspired) */}
+          <div className="card" style={{ borderLeft: '4px solid #8b5cf6', background: 'linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(15,23,42,0.85) 100%)' }}>
+            <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.05rem', marginBottom: '0.75rem', color: '#c084fc', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <Bot size={18} color="#c084fc" /> Esquadrão FinRobot (3 Agentes)
+            </h3>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              {finRobotAgents.map((agent) => (
+                <div key={agent.id} style={{
+                  padding: '0.75rem',
+                  borderRadius: '8px',
+                  background: 'rgba(0, 0, 0, 0.35)',
+                  border: '1px solid rgba(255, 255, 255, 0.05)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.35rem'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700, fontSize: '0.82rem', color: '#f8fafc' }}>
+                      <span>{agent.avatar}</span> {agent.name}
+                    </div>
+                    <span style={{
+                      fontSize: '0.65rem',
+                      fontWeight: 800,
+                      padding: '2px 6px',
+                      borderRadius: '4px',
+                      background: `${agent.badgeColor}22`,
+                      color: agent.badgeColor,
+                      border: `1px solid ${agent.badgeColor}44`
+                    }}>
+                      {agent.status}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
+                    {agent.diagnosis}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
 
           <div className="card" style={{ borderLeft: '4px solid var(--primary-accent)', position: 'relative', background: 'linear-gradient(135deg, rgba(30,41,59,0.5) 0%, rgba(15,23,42,0.8) 100%)' }}>
             <div style={{ position: 'absolute', top: '1rem', right: '1rem', cursor: 'pointer' }} onClick={() => setShowSettings(!showSettings)}>

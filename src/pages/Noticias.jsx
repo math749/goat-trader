@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Newspaper, Calendar, Clock, Globe, AlertTriangle, ExternalLink, RefreshCw, Flame, Shield, Info } from 'lucide-react';
+import { Newspaper, Calendar, Clock, Globe, AlertTriangle, ExternalLink, RefreshCw, Flame, Shield, Info, Activity } from 'lucide-react';
+import { calculateFinGptMarketSentiment } from '../services/finGptService';
 
 const API_BASE = 'http://127.0.0.1:8000';
 
@@ -204,6 +205,11 @@ export default function Noticias() {
   });
 
   const soonEvent = calendar?.next_high_impact;
+  const sentimentInfo = calculateFinGptMarketSentiment([
+    { symbol: 'IBOV', change: '+0.85%' },
+    { symbol: 'WINFUT', change: '+0.92%' },
+    { symbol: 'WDOFUT', change: '-0.45%' }
+  ]);
 
   return (
     <div style={{ background: '#0d0d0f', minHeight: '100vh', padding: '24px', fontFamily: "'Inter', sans-serif" }}>
@@ -218,7 +224,7 @@ export default function Noticias() {
       `}</style>
 
       {/* Header */}
-      <div style={{ marginBottom: '24px' }}>
+      <div style={{ marginBottom: '20px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px' }}>
           <div style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', borderRadius: '10px', padding: '8px', display: 'flex' }}>
             <Newspaper size={20} color="white" />
@@ -228,9 +234,66 @@ export default function Noticias() {
           </h1>
         </div>
         <p style={{ color: '#6b7280', margin: 0, fontSize: '0.85rem' }}>
-          Feed em tempo real • Atualização a cada 5 minutos
+          Feed em tempo real • Inteligência FinGPT AI4Finance Integrada
           {lastUpdate && <span> • Atualizado às {lastUpdate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>}
         </p>
+      </div>
+
+      {/* FinGPT Market Sentiment Radar Banner */}
+      <div style={{
+        background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.7) 100%)',
+        border: `1px solid ${sentimentInfo.color}44`,
+        borderRadius: '14px',
+        padding: '16px 20px',
+        marginBottom: '20px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '12px',
+        boxShadow: `0 8px 25px ${sentimentInfo.color}15`
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{
+            background: `${sentimentInfo.color}20`,
+            border: `1px solid ${sentimentInfo.color}55`,
+            borderRadius: '10px',
+            padding: '10px',
+            display: 'flex'
+          }}>
+            <Activity size={22} color={sentimentInfo.color} />
+          </div>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '0.7rem', fontWeight: 800, color: '#94a3b8', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                Radar de Sentimento FinGPT (AI4Finance)
+              </span>
+              <span style={{
+                fontSize: '0.68rem',
+                fontWeight: 800,
+                padding: '2px 8px',
+                borderRadius: '4px',
+                background: `${sentimentInfo.color}25`,
+                color: sentimentInfo.color,
+                border: `1px solid ${sentimentInfo.color}44`
+              }}>
+                {sentimentInfo.sentiment}
+              </span>
+            </div>
+            <h3 style={{ color: '#f8fafc', fontSize: '1.05rem', fontWeight: 700, margin: '3px 0 0' }}>
+              {sentimentInfo.label}
+            </h3>
+            <p style={{ color: '#94a3b8', fontSize: '0.8rem', margin: '2px 0 0' }}>
+              {sentimentInfo.summary}
+            </p>
+          </div>
+        </div>
+        <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+          <span style={{ fontSize: '0.68rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>Score de Tendência</span>
+          <span style={{ fontSize: '1.6rem', fontWeight: 800, color: sentimentInfo.color, fontFamily: 'monospace' }}>
+            {sentimentInfo.score} <span style={{ fontSize: '0.9rem', color: '#64748b' }}>/ 100</span>
+          </span>
+        </div>
       </div>
 
       {/* Alerta de evento de alto impacto iminente */}
