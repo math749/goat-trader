@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { History, UploadCloud, Trash2, AlertCircle, Plus, X } from 'lucide-react';
 import { useTrades } from '../contexts/TradeContext';
 import VisualImportModal from '../components/VisualImportModal';
@@ -9,7 +9,6 @@ const Historico = () => {
   const [successMsg] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
-  const fileInputRef = useRef(null);
 
   // Estados para o formulário manual
   const [formData, setFormData] = useState({
@@ -131,52 +130,95 @@ const Historico = () => {
         </div>
       )}
 
+      {trades.length > 0 && (
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: '1rem',
+          marginBottom: '1.5rem'
+        }}>
+          <div className="card" style={{ padding: '1rem 1.25rem', background: 'var(--bg-card)', border: '1px solid var(--border-subtle)' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>TOTAL OPERAÇÕES</span>
+            <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-main)', marginTop: '0.2rem' }}>{trades.length}</div>
+          </div>
+          <div className="card" style={{ padding: '1rem 1.25rem', background: 'var(--bg-card)', border: '1px solid var(--border-subtle)' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>CUSTO B3 ESTIMADO</span>
+            <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#f59e0b', marginTop: '0.2rem' }}>
+              {formatCurrencyNum(trades.reduce((acc, t) => {
+                const ativo = t['ativo'] || t['Ativo'] || '';
+                const numQtd = parseInt(String(t['quantidade'] || t['qtd'] || 1)) || 1;
+                let c = 0;
+                if (ativo.toUpperCase().startsWith('WIN')) c = 0.25;
+                else if (ativo.toUpperCase().startsWith('WDO')) c = 1.00;
+                else if (ativo.toUpperCase().startsWith('BIT')) c = 0.72;
+                return acc + (c * 2 * numQtd);
+              }, 0))}
+            </div>
+          </div>
+          <div className="card" style={{ padding: '1rem 1.25rem', background: 'var(--bg-card)', border: '1px solid var(--border-subtle)' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>PNL LÍQUIDO TOTAL</span>
+            <div style={{
+              fontSize: '1.5rem',
+              fontWeight: 800,
+              color: trades.reduce((acc, t) => {
+                const r = parseFloat(String(t['resultado líquido'] || t['resultado'] || 0).replace(/[^\d,-]/g, '').replace(',', '.')) || 0;
+                return acc + r;
+              }, 0) >= 0 ? 'var(--success)' : 'var(--danger)',
+              marginTop: '0.2rem'
+            }}>
+              {formatCurrencyNum(trades.reduce((acc, t) => {
+                const r = parseFloat(String(t['resultado líquido'] || t['resultado'] || 0).replace(/[^\d,-]/g, '').replace(',', '.')) || 0;
+                return acc + r;
+              }, 0))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {trades.length === 0 ? (
         <div className="card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '4rem', textAlign: 'center', border: '2px dashed var(--border-subtle)' }}>
-          <div style={{ width: '64px', height: '64px', borderRadius: '50%', backgroundColor: 'rgba(99, 102, 241, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem' }}>
+          <div style={{ width: '64px', height: '64px', borderRadius: '50%', backgroundColor: 'rgba(56, 189, 248, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem' }}>
             <UploadCloud size={32} color="var(--primary-accent)" />
           </div>
-          <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>Importe seu Relatório do Profit</h3>
-          <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', maxWidth: '400px' }}>
-            No Profit Pro, vá em Relatório de Performance &gt; Clique com botão direito &gt; Exportar para Excel/CSV. Faça o upload do arquivo para automação total.
+          <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--text-main)' }}>Importe seu Relatório do Profit Pro / MT5</h3>
+          <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', maxWidth: '440px', lineHeight: 1.6 }}>
+            No Profit Pro, acesse <strong>Relatório de Performance &gt; Clique com botão direito &gt; Exportar para Excel/CSV</strong>. Arraste o arquivo para automação total de PnL e IR.
           </p>
           
           <button 
             className="btn btn-primary" 
-            onClick={() => fileInputRef.current.click()}
-            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 2rem', backgroundColor: 'var(--primary-accent)', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}
+            onClick={() => setIsImportModalOpen(true)}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.85rem 2rem', backgroundColor: 'var(--primary-accent)', color: '#0f172a', border: 'none', borderRadius: '10px', fontWeight: '800', cursor: 'pointer', boxShadow: '0 0 20px rgba(56,189,248,0.3)' }}
           >
             <UploadCloud size={20} />
-            Selecionar Arquivo CSV
+            Importar Relatório Profit (.csv)
           </button>
         </div>
       ) : (
-        <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+        <div className="card" style={{ padding: 0, overflow: 'hidden', border: '1px solid var(--border-subtle)' }}>
           <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-              <thead style={{ backgroundColor: 'rgba(255,255,255,0.02)', borderBottom: '1px solid var(--border-subtle)' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
+              <thead style={{ backgroundColor: 'rgba(255,255,255,0.03)', borderBottom: '1px solid var(--border-subtle)' }}>
                 <tr>
-                  <th style={{ padding: '1rem', fontWeight: 600 }}>Data/Hora</th>
-                  <th style={{ padding: '1rem', fontWeight: 600 }}>Ativo</th>
-                  <th style={{ padding: '1rem', fontWeight: 600 }}>Lado</th>
-                  <th style={{ padding: '1rem', fontWeight: 600 }}>Qtd</th>
-                  <th style={{ padding: '1rem', fontWeight: 600, textAlign: 'right' }}>Bruto</th>
-                  <th style={{ padding: '1rem', fontWeight: 600, textAlign: 'right' }}>Custo B3</th>
-                  <th style={{ padding: '1rem', fontWeight: 600, textAlign: 'right' }}>Líquido</th>
+                  <th style={{ padding: '1rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', fontSize: '0.75rem' }}>Data / Hora</th>
+                  <th style={{ padding: '1rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', fontSize: '0.75rem' }}>Ativo</th>
+                  <th style={{ padding: '1rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', fontSize: '0.75rem' }}>Lado</th>
+                  <th style={{ padding: '1rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', fontSize: '0.75rem' }}>Qtd</th>
+                  <th style={{ padding: '1rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', fontSize: '0.75rem', textAlign: 'right' }}>Bruto</th>
+                  <th style={{ padding: '1rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', fontSize: '0.75rem', textAlign: 'right' }}>Custo B3</th>
+                  <th style={{ padding: '1rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', fontSize: '0.75rem', textAlign: 'right' }}>Resultado Líquido</th>
                 </tr>
               </thead>
               <tbody>
                 {trades.map((trade, index) => {
                   const data = trade['abertura'] || trade['data'] || trade['hora'] || trade['Abertura'] || trade['Data'] || '--';
                   const ativo = trade['ativo'] || trade['Ativo'] || '--';
-                  const lado = trade['lado'] || trade['operação'] || trade['operacao'] || trade['Lado'] || '--';
-                  const qtd = trade['quantidade'] || trade['qtd'] || trade['qtd compra'] || trade['qtd venda'] || trade['Quantidade'] || '--';
+                  const lado = trade['lado'] || trade['operação'] || trade['operacao'] || trade['Lado'] || 'C';
+                  const qtd = trade['quantidade'] || trade['qtd'] || trade['qtd compra'] || trade['qtd venda'] || trade['Quantidade'] || '1';
                   
-                  // Resultado bruto do trade
-                  const resultadoStr = trade['resultado líquido'] || trade['resultado liquido'] || trade['res. operação'] || trade['res operacao'] || trade['resultado'] || trade['Resultado (R$)'] || trade['Resultado Líquido'] || trade['total'] || '0';
+                  const resultadoStr = trade['resultado líquido'] || trade['resultado liquido'] || trade['res. operação'] || trade['res operacao'] || trade['resultado'] || trade['Resultado (R$)'] || trade['total'] || '0';
                   const bruto = parseFloat(String(resultadoStr).replace(/[^\d,-]/g, '').replace(',', '.')) || 0;
 
-                  // Cálculo do Custo B3 (Round Turn = Abertura + Fechamento)
                   const numQtd = parseInt(String(qtd).replace(/[^\d]/g, '')) || 1;
                   let custoPorPerna = 0;
                   const uAtivo = ativo.toUpperCase();
@@ -184,25 +226,53 @@ const Historico = () => {
                   else if (uAtivo.startsWith('WDO')) custoPorPerna = 1.00;
                   else if (uAtivo.startsWith('BIT')) custoPorPerna = 0.72;
                   
-                  // Multiplica por 2 porque tem custo na entrada e na saída, e depois pela quantidade
                   const custo = custoPorPerna * 2 * numQtd;
-
                   const liquido = bruto - custo;
+                  const isWin = liquido > 0;
+                  const isLoss = liquido < 0;
+
+                  const isCompra = String(lado).toUpperCase().startsWith('C') || String(lado).toUpperCase().includes('COMPRA');
 
                   return (
-                    <tr key={index} style={{ borderBottom: '1px solid rgba(255,255,255,0.02)' }}>
-                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.875rem' }}>{data}</td>
-                      <td style={{ padding: '0.75rem 1rem', fontWeight: '500' }}>{ativo}</td>
-                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.875rem' }}>{lado}</td>
-                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.875rem' }}>{numQtd}</td>
-                      <td style={{ padding: '0.75rem 1rem', fontWeight: '600', textAlign: 'right', color: bruto > 0 ? 'var(--success)' : (bruto < 0 ? 'var(--danger)' : 'var(--text-main)') }}>
+                    <tr key={index} style={{ borderBottom: '1px solid var(--border-subtle)', transition: 'background 0.2s' }}>
+                      <td style={{ padding: '0.85rem 1rem', fontSize: '0.82rem', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>{data}</td>
+                      <td style={{ padding: '0.85rem 1rem', fontWeight: '800', color: 'var(--text-main)' }}>{ativo}</td>
+                      <td style={{ padding: '0.85rem 1rem' }}>
+                        <span style={{
+                          fontSize: '0.7rem',
+                          fontWeight: '800',
+                          padding: '2px 8px',
+                          borderRadius: '4px',
+                          background: isCompra ? 'rgba(56, 189, 248, 0.15)' : 'rgba(245, 158, 11, 0.15)',
+                          color: isCompra ? '#38bdf8' : '#f59e0b'
+                        }}>
+                          {isCompra ? 'COMPRA' : 'VENDA'}
+                        </span>
+                      </td>
+                      <td style={{ padding: '0.85rem 1rem', fontWeight: '700', fontFamily: 'var(--font-mono)', color: 'var(--text-main)' }}>{numQtd}</td>
+                      <td style={{ padding: '0.85rem 1rem', fontWeight: '700', textAlign: 'right', fontFamily: 'var(--font-mono)', color: bruto > 0 ? 'var(--success)' : (bruto < 0 ? 'var(--danger)' : 'var(--text-main)') }}>
                         {formatCurrencyNum(bruto)}
                       </td>
-                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.875rem', textAlign: 'right', color: 'var(--text-muted)' }}>
+                      <td style={{ padding: '0.85rem 1rem', fontSize: '0.82rem', textAlign: 'right', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
                         -{formatCurrencyNum(custo)}
                       </td>
-                      <td style={{ padding: '0.75rem 1rem', fontWeight: 'bold', textAlign: 'right', color: liquido > 0 ? 'var(--success)' : (liquido < 0 ? 'var(--danger)' : 'var(--text-main)') }}>
-                        {formatCurrencyNum(liquido)}
+                      <td style={{ padding: '0.85rem 1rem', textAlign: 'right' }}>
+                        <span style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          padding: '4px 10px',
+                          borderRadius: '6px',
+                          fontWeight: '800',
+                          fontFamily: 'var(--font-mono)',
+                          fontSize: '0.85rem',
+                          background: isWin ? 'rgba(16, 185, 129, 0.15)' : (isLoss ? 'rgba(239, 68, 68, 0.15)' : 'rgba(255, 255, 255, 0.05)'),
+                          color: isWin ? '#10b981' : (isLoss ? '#ef4444' : 'var(--text-main)'),
+                          boxShadow: isWin ? '0 0 10px rgba(16,185,129,0.2)' : (isLoss ? '0 0 10px rgba(239,68,68,0.2)' : 'none')
+                        }}>
+                          {isWin ? '● WIN ' : (isLoss ? '● LOSS ' : '● EVEN ')}
+                          {formatCurrencyNum(liquido)}
+                        </span>
                       </td>
                     </tr>
                   );
