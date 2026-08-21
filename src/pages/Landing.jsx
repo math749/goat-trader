@@ -994,21 +994,25 @@ const Landing = () => {
 
           <div className="hero-actions">
             <button
-              className="hero-cta btn-primary magnetic-btn"
-              onMouseMove={handleMagneticMove}
-              onMouseLeave={handleMagneticLeave}
+              className="hero-cta btn-primary"
               onClick={() => navigate('/login?mode=register')}
+              style={{ cursor: 'pointer', zIndex: 200 }}
             >
               <span className="btn-content">
                 Explorar Plataforma Grátis <ArrowRight size={18} />
               </span>
             </button>
             <button
-              className="hero-cta btn-ghost magnetic-btn"
-              onMouseMove={handleMagneticMove}
-              onMouseLeave={handleMagneticLeave}
-              onClick={() => document.getElementById('planos')?.scrollIntoView({ behavior: 'smooth' })}
-              style={{ borderColor: '#38bdf8', color: '#38bdf8', fontWeight: 800 }}
+              className="hero-cta btn-ghost"
+              onClick={() => {
+                const el = document.getElementById('planos');
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else {
+                  window.scrollTo({ top: 1400, behavior: 'smooth' });
+                }
+              }}
+              style={{ borderColor: '#38bdf8', color: '#38bdf8', fontWeight: 800, cursor: 'pointer', zIndex: 200 }}
             >
               🏷️ Preços & Planos (R$ 47/mês)
             </button>

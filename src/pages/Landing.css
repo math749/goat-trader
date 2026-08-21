@@ -18,7 +18,7 @@
 }
 
 a, button, input, select, textarea {
-  cursor: none;
+  cursor: pointer !important;
 }
 
 /* 1. CUSTOM NEON MAGNETIC FOLLOWER CURSOR (Design Spells) */
@@ -254,6 +254,7 @@ a, button, input, select, textarea {
   -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
   mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
   z-index: 2;
+  pointer-events: none;
 }
 
 .aurora-container {
@@ -264,12 +265,14 @@ a, button, input, select, textarea {
   z-index: 2;
   filter: blur(80px);
   opacity: 0.45;
+  pointer-events: none;
 }
 
 .aurora-orb {
   position: absolute;
   border-radius: 50%;
   animation: float 22s infinite alternate ease-in-out;
+  pointer-events: none;
 }
 
 .orb-1 {
@@ -311,13 +314,15 @@ a, button, input, select, textarea {
   inset: 0;
   background: radial-gradient(circle at center, transparent 0%, #030408 85%);
   z-index: 3;
+  pointer-events: none;
 }
 
 .hero-content {
   position: relative;
-  z-index: 10;
+  z-index: 100;
   max-width: 1300px;
   width: 100%;
+  pointer-events: auto;
   padding: 0 2rem;
   display: flex;
   flex-direction: column;
@@ -400,10 +405,15 @@ a, button, input, select, textarea {
   gap: 1.25rem;
   flex-wrap: wrap;
   justify-content: center;
+  position: relative;
+  z-index: 105;
+  pointer-events: auto;
 }
 
 .hero-cta {
   position: relative;
+  z-index: 110;
+  pointer-events: auto !important;
   overflow: hidden;
   padding: 1.1rem 2.4rem;
   border-radius: 100px;
@@ -414,7 +424,7 @@ a, button, input, select, textarea {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  cursor: pointer;
+  cursor: pointer !important;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
