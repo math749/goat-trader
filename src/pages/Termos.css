@@ -1,0 +1,122 @@
+.termos-container {
+  min-height: 100vh;
+  background-color: #0b0f19;
+  color: #f1f5f9;
+  font-family: 'Inter', system-ui, sans-serif;
+  padding: 3rem 1.5rem;
+}
+
+.termos-content {
+  max-width: 900px;
+  margin: 0 auto;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 2.5rem;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.termos-header {
+  margin-bottom: 2.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 1.5rem;
+}
+
+.termos-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #ffffff 0%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.termos-subtitle {
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.termos-section {
+  margin-bottom: 2rem;
+}
+
+.termos-section h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #38bdf8;
+  margin-bottom: 0.75rem;
+}
+
+.termos-section p {
+  color: #cbd5e1;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.termos-section ul {
+  color: #cbd5e1;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.termos-section li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.termos-highlight {
+  background: rgba(239, 68, 68, 0.1);
+  border-left: 4px solid #ef4444;
+  padding: 1rem 1.25rem;
+  border-radius: 0 8px 8px 0;
+  margin: 1.5rem 0;
+}
+
+.termos-highlight p {
+  color: #fca5a5;
+  margin: 0;
+  font-weight: 600;
+}
+
+.termos-footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.back-link {
+  color: #38bdf8;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.2s;
+}
+
+.back-link:hover {
+  color: #7dd3fc;
+}
+
+@media (max-width: 768px) {
+  .termos-container {
+    padding: 1.5rem 1rem;
+  }
+  
+  .termos-content {
+    padding: 1.5rem;
+  }
+
+  .termos-title {
+    font-size: 1.6rem;
+  }
+}

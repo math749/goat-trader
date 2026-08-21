@@ -317,9 +317,12 @@ const Login = () => {
               </button>
             </form>
             
-            <div className="login-footer">
+            <div className="login-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Link to="/">
                 <ArrowLeft size={14} /> Voltar para a Base
+              </Link>
+              <Link to="/termos" style={{ fontSize: '0.75rem', color: '#94a3b8', textDecoration: 'none' }}>
+                Termos & Privacidade
               </Link>
             </div>
           </div>

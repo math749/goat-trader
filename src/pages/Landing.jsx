@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -1122,6 +1122,13 @@ const Landing = () => {
         >
           ENTRAR NA MATILHA <ArrowRight size={24} />
         </button>
+
+        <div style={{ marginTop: '3rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.08)', width: '100%', maxWidth: '1200px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', paddingLeft: '2rem', paddingRight: '2rem', color: '#64748b', fontSize: '0.85rem' }}>
+          <span>© {new Date().getFullYear()} GOAT TRADER — Cockpit de Alta Performance & Gestão de Risco.</span>
+          <Link to="/termos" style={{ color: '#38bdf8', textDecoration: 'none', fontWeight: 600 }}>
+            Termos de Uso & Política de Privacidade (LGPD)
+          </Link>
+        </div>
       </section>
     </main>
   );

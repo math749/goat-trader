@@ -8,6 +8,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 // Public Pages
 import Landing from './pages/Landing';
 import Login from './pages/Login';
+import Termos from './pages/Termos';
 
 // Private Pages (App)
 import DashboardHome from './pages/DashboardHome';
@@ -39,8 +40,8 @@ function App() {
             <Routes>
               {/* Marketing / Public Routes */}
               <Route path="/" element={<Landing />} />
-              
               <Route path="/login" element={<Login />} />
+              <Route path="/termos" element={<Termos />} />
 
               {/* Protected App Routes */}
               <Route path="/app" element={<ProtectedRoute />}>
