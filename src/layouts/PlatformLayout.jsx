@@ -30,9 +30,10 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { getTrialStatus, PRICING_CONFIG } from '../services/trialService';
 
 const PlatformLayout = () => {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const outlet = useOutlet();
@@ -208,7 +209,65 @@ const PlatformLayout = () => {
           ))}
         </nav>
         
-        <div style={{ padding: '1rem', marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        <div style={{ padding: '0.75rem 1rem 1rem', marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          
+          {/* Banner de Teste VIP de 5 Dias / Upgrade */}
+          {(() => {
+            const trial = getTrialStatus(user);
+            return (
+              <div style={{
+                background: trial.isPro
+                  ? 'linear-gradient(135deg, rgba(16,185,129,0.15) 0%, rgba(15,23,42,0.6) 100%)'
+                  : 'linear-gradient(135deg, rgba(56,189,248,0.15) 0%, rgba(30,41,59,0.8) 100%)',
+                border: `1px solid ${trial.isPro ? 'rgba(16,185,129,0.3)' : 'rgba(56,189,248,0.3)'}`,
+                borderRadius: '10px',
+                padding: '10px 12px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '6px'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '0.68rem', fontWeight: 800, color: trial.isPro ? '#10b981' : '#38bdf8', letterSpacing: '0.05em' }}>
+                    {trial.isPro ? '● ASSINANTE PRO' : '⚡ TESTE VIP 5 DIAS'}
+                  </span>
+                  {!trial.isPro && (
+                    <span style={{ fontSize: '0.65rem', color: '#94a3b8', fontWeight: 600 }}>
+                      {trial.daysLeft}d {trial.hoursLeft}h restantes
+                    </span>
+                  )}
+                </div>
+                
+                {!trial.isPro && (
+                  <>
+                    <p style={{ margin: 0, fontSize: '0.75rem', color: '#cbd5e1', lineHeight: 1.3 }}>
+                      Acesse a GOAT IA 2.5, FinGPT e Trava de Risco por apenas <strong>{PRICING_CONFIG.monthlyFormatted}/mês</strong>.
+                    </p>
+                    <a
+                      href={PRICING_CONFIG.asaasCheckoutUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'block',
+                        textAlign: 'center',
+                        textDecoration: 'none',
+                        background: '#38bdf8',
+                        color: '#0f172a',
+                        fontWeight: 800,
+                        fontSize: '0.75rem',
+                        padding: '6px 10px',
+                        borderRadius: '6px',
+                        marginTop: '2px',
+                        transition: 'opacity 0.2s'
+                      }}
+                    >
+                      Assinar GOAT PRO ({PRICING_CONFIG.monthlyFormatted})
+                    </a>
+                  </>
+                )}
+              </div>
+            );
+          })()}
+
           <button 
             onClick={toggleTheme}
             className="nav-item"
