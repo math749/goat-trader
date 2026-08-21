@@ -25,7 +25,6 @@ import {
   FileText,
   Brain,
   Search,
-  Award,
   Menu,
   X
 } from 'lucide-react';
@@ -75,7 +74,6 @@ const PlatformLayout = () => {
     {
       title: 'GESTÃO & RISCO',
       items: [
-        { path: '/app/mesa-proprietaria', label: 'Mesa Proprietária', icon: <Award size={18} /> },
         { path: '/app/calculadora', label: 'Gestão de Risco & MC', icon: <ShieldAlert size={18} /> },
         { path: '/app/evolucao', label: 'Evolução do Trader', icon: <TrendingUp size={18} /> },
         { path: '/app/psicologia', label: 'Psicologia', icon: <Brain size={18} /> },

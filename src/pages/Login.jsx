@@ -119,7 +119,7 @@ const Login = () => {
       if (isLogin) {
         if (email && password) {
           await login(email, password);
-          navigate('/app/mesa-proprietaria');
+          navigate('/app');
         }
       } else {
         if (password !== confirmPassword) {
@@ -130,7 +130,7 @@ const Login = () => {
 
         if (name && email && password) {
           await register(email, password, name);
-          navigate('/app/mesa-proprietaria');
+          navigate('/app');
         }
       }
     } catch (err) {

@@ -28,7 +28,6 @@ import QuantRadar from './pages/QuantRadar';
 import Noticias from './pages/Noticias';
 import ImpostoRenda from './pages/ImpostoRenda';
 import Psicologia from './pages/Psicologia';
-import MesaProprietaria from './pages/MesaProprietaria';
 import './index.css';
 
 function App() {
@@ -49,7 +48,6 @@ function App() {
                   <Route index element={<DashboardHome />} />
                   <Route path="abertura" element={<Abertura />} />
                   <Route path="calculadora" element={<CalculadoraRisco />} />
-                  <Route path="mesa-proprietaria" element={<MesaProprietaria />} />
                   <Route path="evolucao" element={<Evolucao />} />
                   <Route path="correlacao" element={<Correlacao />} />
                   <Route path="diario" element={<Diario />} />
