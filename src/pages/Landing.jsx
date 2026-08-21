@@ -924,30 +924,28 @@ const Landing = () => {
       <CustomCursor />
 
       {/* Navigation */}
-      <nav className="cinematic-nav" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.2rem 3rem' }}>
+      <nav className="cinematic-nav">
         <div className="nav-logo nav-elem" style={{ cursor: 'pointer' }} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
           GOAT TRADER <span className="logo-badge">PRO 3D</span>
         </div>
 
-        <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-          <a href="#recursos" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600, transition: 'color 0.2s' }}>Recursos</a>
-          <a href="#planos" style={{ color: '#38bdf8', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 700, transition: 'color 0.2s' }}>Planos & Preços</a>
+        <div className="nav-links nav-elem">
+          <a href="#recursos" className="nav-link-item">Recursos</a>
+          <a href="#planos" className="nav-link-item" style={{ color: '#38bdf8', fontWeight: 800 }}>Preços & Planos</a>
         </div>
 
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+        <div className="nav-actions nav-elem">
           <button 
-            className="nav-btn nav-elem" 
+            className="nav-btn-secondary" 
             onClick={() => navigate('/login?mode=login')}
-            style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#ffffff' }}
           >
-            Entrar <LogIn size={16} />
+            Entrar <LogIn size={15} />
           </button>
           <button 
-            className="nav-btn nav-elem" 
+            className="nav-btn-primary" 
             onClick={() => navigate('/login?mode=register')}
-            style={{ background: 'linear-gradient(135deg, #38bdf8, #3b82f6)', color: '#0f172a', fontWeight: 800, border: 'none' }}
           >
-            Criar Conta Grátis
+            Criar Conta (5 Dias VIP)
           </button>
         </div>
       </nav>
@@ -999,7 +997,7 @@ const Landing = () => {
               className="hero-cta btn-primary magnetic-btn"
               onMouseMove={handleMagneticMove}
               onMouseLeave={handleMagneticLeave}
-              onClick={() => navigate('/login')}
+              onClick={() => navigate('/login?mode=register')}
             >
               <span className="btn-content">
                 Explorar Plataforma Grátis <ArrowRight size={18} />
@@ -1009,9 +1007,10 @@ const Landing = () => {
               className="hero-cta btn-ghost magnetic-btn"
               onMouseMove={handleMagneticMove}
               onMouseLeave={handleMagneticLeave}
-              onClick={() => navigate('/login')}
+              onClick={() => document.getElementById('planos')?.scrollIntoView({ behavior: 'smooth' })}
+              style={{ borderColor: '#38bdf8', color: '#38bdf8', fontWeight: 800 }}
             >
-              Ver Recursos da IA
+              🏷️ Preços & Planos (R$ 47/mês)
             </button>
           </div>
 
@@ -1039,7 +1038,7 @@ const Landing = () => {
       <CandleTunnelSection />
 
       {/* Bento Grid Section with 3D Tilt Hover Physics */}
-      <section className="bento-section">
+      <section id="recursos" className="bento-section">
         <div className="bento-container">
           <div className="bento-header">
             <span className="section-badge"><Cpu size={14} /> ARSENAL INSTITUCIONAL</span>
