@@ -26,9 +26,14 @@ import {
   TrendingDown,
   RotateCcw,
   Target,
-  FileCheck
+  FileCheck,
+  Settings,
+  Key,
+  Cpu,
+  X
 } from 'lucide-react';
 import { useTrades } from '../contexts/TradeContext';
+import { talkToAmanda } from '../services/amandaAgent';
 import './Psicologia.css';
 
 // Respostas inteligentes e situacionais com o tom equilibrado e 12 anos de experiência da Amanda
@@ -138,6 +143,14 @@ const Psicologia = () => {
   const [notaDia, setNotaDia] = useState('');
   const [debriefingFeedback, setDebriefingFeedback] = useState(null);
 
+  // AI Agent Settings State
+  const [aiProvider, setAiProvider] = useState(() => localStorage.getItem('amanda_provider') || 'gemini');
+  const [aiApiKey, setAiApiKey] = useState(() => localStorage.getItem('amanda_api_key') || import.meta.env.VITE_GEMINI_API_KEY || '');
+  const [showAiModal, setShowAiModal] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const [tempApiKey, setTempApiKey] = useState('');
+  const [tempProvider, setTempProvider] = useState('gemini');
+
   // Chat State
   const [messages, setMessages] = useState([
     {
@@ -171,7 +184,6 @@ const Psicologia = () => {
 
   // Cálculo da Nota de Prontidão Mental (0 a 100%)
   const readinessScore = useMemo(() => {
-    // Sono (peso 25%), Foco (peso 35%), Estresse (peso 20% invertido), Pressão (peso 20% invertido)
     const sonoScore = (sono / 10) * 25;
     const focoScore = (foco / 10) * 35;
     const estresseScore = ((10 - estresse) / 10) * 20;
@@ -248,7 +260,7 @@ const Psicologia = () => {
   // Scroll do chat automático
   useEffect(() => {
     chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages, isTyping]);
 
   // Assinar Pacto Diário
   const handleAssinarPacto = () => {
@@ -294,8 +306,18 @@ const Psicologia = () => {
     ]);
   };
 
-  // Enviar mensagem no chat
-  const handleSendChat = (textToSend = null) => {
+  // Salvar configurações de IA
+  const handleSaveAiSettings = () => {
+    setAiProvider(tempProvider);
+    setAiApiKey(tempApiKey.trim());
+    localStorage.setItem('amanda_provider', tempProvider);
+    localStorage.setItem('amanda_api_key', tempApiKey.trim());
+    setShowAiModal(false);
+    playZenBell(528);
+  };
+
+  // Enviar mensagem no chat com Amanda (AI ou Motor Nativo)
+  const handleSendChat = async (textToSend = null) => {
     const msg = textToSend || inputMsg;
     if (!msg.trim()) return;
 
@@ -303,8 +325,39 @@ const Psicologia = () => {
     const newMsgObj = { sender: 'user', time: userTime, text: msg };
     setMessages(prev => [...prev, newMsgObj]);
     setInputMsg('');
+    setIsTyping(true);
 
-    // Gera resposta da Amanda baseada em palavras-chave e inteligência contextual
+    try {
+      // 1. Tenta acionar a IA (Gemini Pro ou Claude) se houver chave configurada
+      if (aiApiKey) {
+        const liveAiResponse = await talkToAmanda({
+          provider: aiProvider,
+          apiKey: aiApiKey,
+          message: msg,
+          history: messages,
+          context: { pnl: pnlDia, readinessScore }
+        });
+
+        if (liveAiResponse) {
+          setMessages(prev => [
+            ...prev,
+            {
+              sender: 'amanda',
+              time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+              text: liveAiResponse,
+              source: aiProvider
+            }
+          ]);
+          setIsTyping(false);
+          playZenBell(528);
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn("Erro ao consultar LLM da Amanda, ativando motor nativo:", err);
+    }
+
+    // 2. Fallback Inteligente: Motor Cognitivo Nativo da Amanda (Residente e Instantâneo)
     setTimeout(() => {
       let reply = "";
       const lower = msg.toLowerCase();
@@ -315,20 +368,20 @@ const Psicologia = () => {
         reply = AMANDA_KNOWLEDGE_BASE.medo_gatilho.advice;
       } else if (lower.includes('devolver') || lower.includes('tarde') || lower.includes('bater meta')) {
         reply = AMANDA_KNOWLEDGE_BASE.devolver_lucro.advice;
-      } else if (lower.includes('confiança') || lower.includes('perdendo') || lower.includes('sequencia') || lower.includes('loss')) {
+      } else if (lower.includes('confiança') || lower.includes('confianca') || lower.includes('perdendo') || lower.includes('sequencia') || lower.includes('loss')) {
         reply = AMANDA_KNOWLEDGE_BASE.recuperar_confianca.advice;
       } else if (lower.includes('médio') || lower.includes('medio') || lower.includes('dobrar')) {
         reply = AMANDA_KNOWLEDGE_BASE.preco_medio.advice;
       } else if (lower.includes('fomo') || lower.includes('perdi') || lower.includes('fora')) {
         reply = AMANDA_KNOWLEDGE_BASE.fomo.advice;
       } else {
-        reply = `Estou te ouvindo com atenção total. Como mentora, garanto: **o que você está sentindo agora não é exclusivo seu, é a biologia humana reagindo à incerteza do mercado.**
+        reply = `Estou te ouvindo com atenção total. Como mentora com mais de 12 anos de pregão, te garanto: **o que você está sentindo agora não é fraqueza sua, é a biologia humana reagindo à incerteza do mercado.**
 
-Para te ajudar cirurgicamente, me diga:
+Para te ajudar cirurgicamente agora:
 1. Esse incômodo vem de uma perda financeira ou da frustração de ter quebrado seu plano?
 2. Você está com alguma posição aberta neste exato instante?
 
-Respire fundo. Não tome nenhuma decisão precipitada enquanto conversamos. Estou com você.`;
+Respire fundo. Não tome nenhuma decisão precipitada enquanto conversamos. Estou aqui ao seu lado.`;
       }
 
       setMessages(prev => [
@@ -336,9 +389,11 @@ Respire fundo. Não tome nenhuma decisão precipitada enquanto conversamos. Esto
         {
           sender: 'amanda',
           time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-          text: reply
+          text: reply,
+          source: 'native'
         }
       ]);
+      setIsTyping(false);
       playZenBell(528);
     }, 600);
   };
@@ -386,12 +441,15 @@ Respire fundo. Não tome nenhuma decisão precipitada enquanto conversamos. Esto
               <span className="badge-expert">
                 <Award size={13} /> 12+ ANOS DE MESA
               </span>
+              <span className="badge-engine">
+                {aiApiKey ? (aiProvider === 'claude' ? '🟣 Claude 3.5 Sonnet' : '🟢 Gemini Pro') : '🟡 Motor Cognitivo 12a'}
+              </span>
             </div>
             <p className="amanda-role">
               Especialista Sênior em Psicologia Comportamental & Risco Institucional
             </p>
             <p className="amanda-quote">
-              "O mercado não tem emoções. A única pessoa que você precisa dominar entre a abertura e o fechamento é você mesmo."
+              "O mercado não tem sentimentos. A única pessoa que você precisa dominar entre a abertura e o fechamento é você mesmo."
             </p>
           </div>
         </div>
@@ -443,7 +501,7 @@ Respire fundo. Não tome nenhuma decisão precipitada enquanto conversamos. Esto
           className={`tab-btn ${activeTab === 'chat' ? 'active' : ''}`}
           onClick={() => setActiveTab('chat')}
         >
-          <MessageCircle size={17} /> 4. Sessão com Amanda
+          <MessageCircle size={17} /> 4. Sessão com Amanda (Chat IA)
         </button>
 
         <button
@@ -815,13 +873,35 @@ Respire fundo. Não tome nenhuma decisão precipitada enquanto conversamos. Esto
       {/* ============================================================ */}
       {activeTab === 'chat' && (
         <div className="tab-content-panel chat-panel">
+          {/* BARRA SUPERIOR DO CHAT COM SELETOR DE IA */}
+          <div className="chat-ai-header">
+            <div className="chat-ai-title">
+              <Brain size={18} color="#38bdf8" />
+              <span>Amanda Vance • Mentora com IA Ativa</span>
+              <span className={`ai-provider-badge ${aiApiKey ? 'active' : 'local'}`}>
+                {aiApiKey ? (aiProvider === 'claude' ? '🟣 Claude 3.5 Sonnet' : '🟢 Gemini Pro') : '🟡 Motor Cognitivo 12a'}
+              </span>
+            </div>
+
+            <button 
+              className="config-ai-btn" 
+              onClick={() => {
+                setTempApiKey(aiApiKey);
+                setTempProvider(aiProvider);
+                setShowAiModal(true);
+              }}
+            >
+              <Settings size={15} /> {aiApiKey ? 'Configurar IA' : 'Conectar Gemini / Claude'}
+            </button>
+          </div>
+
           <div className="chat-messages-scroll">
             {messages.map((m, idx) => (
               <div key={idx} className={`chat-bubble ${m.sender}`}>
                 <div className="bubble-author">
                   {m.sender === 'amanda' ? (
                     <span className="author-name amanda">
-                      <Brain size={13} /> Amanda Vance • {m.time}
+                      <Brain size={13} /> Amanda Vance {m.source && <span className="source-tag">• {m.source}</span>} • {m.time}
                     </span>
                   ) : (
                     <span className="author-name user">
@@ -836,6 +916,19 @@ Respire fundo. Não tome nenhuma decisão precipitada enquanto conversamos. Esto
                 </div>
               </div>
             ))}
+
+            {isTyping && (
+              <div className="chat-bubble amanda typing">
+                <div className="bubble-author">
+                  <span className="author-name amanda">
+                    <Brain size={13} /> Amanda está analisando e formulando resposta...
+                  </span>
+                </div>
+                <div className="typing-dots">
+                  <span></span><span></span><span></span>
+                </div>
+              </div>
+            )}
             <div ref={chatBottomRef} />
           </div>
 
@@ -864,7 +957,7 @@ Respire fundo. Não tome nenhuma decisão precipitada enquanto conversamos. Esto
               onKeyDown={e => e.key === 'Enter' && handleSendChat()}
               placeholder="Desabafe ou pergunte para a Amanda (ex: 'Fiz preço médio e tô com medo')..."
             />
-            <button onClick={() => handleSendChat()} className="send-btn">
+            <button onClick={() => handleSendChat()} className="send-btn" disabled={isTyping}>
               <Send size={18} />
             </button>
           </div>
@@ -942,6 +1035,80 @@ Respire fundo. Não tome nenhuma decisão precipitada enquanto conversamos. Esto
                   <strong>Antídoto da Amanda:</strong> Um candle só existe quando fecha. Antes disso, é apenas imaginação e ansiedade.
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DE CONFIGURAÇÃO DE IA DA AMANDA */}
+      {showAiModal && (
+        <div className="ai-modal-overlay" onClick={() => setShowAiModal(false)}>
+          <div className="ai-modal-content" onClick={e => e.stopPropagation()}>
+            <div className="ai-modal-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Brain size={22} color="#38bdf8" />
+                <h4>Conectar Cérebro IA da Amanda</h4>
+              </div>
+              <button className="close-modal-btn" onClick={() => setShowAiModal(false)}>
+                <X size={18} />
+              </button>
+            </div>
+
+            <p className="ai-modal-desc">
+              Escolha qual modelo de inteligência artificial de ponta deve dar vida à Amanda para interagir com você em tempo real:
+            </p>
+
+            <div className="provider-selector">
+              <label className={`provider-option ${tempProvider === 'gemini' ? 'selected' : ''}`}>
+                <input 
+                  type="radio" 
+                  name="provider" 
+                  value="gemini" 
+                  checked={tempProvider === 'gemini'} 
+                  onChange={() => setTempProvider('gemini')}
+                />
+                <div className="provider-info">
+                  <strong>🟢 Google Gemini Pro</strong>
+                  <span>Alta velocidade e raciocínio analítico (Google AI Studio)</span>
+                </div>
+              </label>
+
+              <label className={`provider-option ${tempProvider === 'claude' ? 'selected' : ''}`}>
+                <input 
+                  type="radio" 
+                  name="provider" 
+                  value="claude" 
+                  checked={tempProvider === 'claude'} 
+                  onChange={() => setTempProvider('claude')}
+                />
+                <div className="provider-info">
+                  <strong>🟣 Anthropic Claude 3.5 Sonnet</strong>
+                  <span>Máxima empatia, nuances psicológicas e raciocínio humano profundo</span>
+                </div>
+              </label>
+            </div>
+
+            <div className="api-key-input-box">
+              <label>Chave de API ({tempProvider === 'gemini' ? 'Gemini API Key' : 'Anthropic Claude API Key'}):</label>
+              <input 
+                type="password" 
+                value={tempApiKey}
+                onChange={e => setTempApiKey(e.target.value)}
+                placeholder={tempProvider === 'gemini' ? 'AIzaSy...' : 'sk-ant-...'}
+              />
+              <span className="api-key-hint">
+                {tempProvider === 'gemini' ? (
+                  <span>Obtenha sua chave gratuita em <a href="https://aistudio.google.com/apikey" target="_blank" rel="noreferrer">aistudio.google.com</a></span>
+                ) : (
+                  <span>Obtenha sua chave em <a href="https://console.anthropic.com/" target="_blank" rel="noreferrer">console.anthropic.com</a></span>
+                )}
+              </span>
+            </div>
+
+            <div className="ai-modal-actions">
+              <button className="save-ai-btn" onClick={handleSaveAiSettings}>
+                Salvar e Ativar com Amanda
+              </button>
             </div>
           </div>
         </div>
