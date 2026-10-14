@@ -78,7 +78,7 @@ const PlatformLayout = () => {
       items: [
         { path: '/app/calculadora', label: 'Gestão de Risco & MC', icon: <ShieldAlert size={18} /> },
         { path: '/app/evolucao', label: 'Evolução do Trader', icon: <TrendingUp size={18} /> },
-        { path: '/app/psicologia', label: 'Psicologia', icon: <Brain size={18} /> },
+        { path: '/app/psicologia', label: 'Amanda (Psicologia)', icon: <Brain size={18} /> },
         { path: '/app/correlacao', label: 'Correlação', icon: <GitCompare size={18} /> },
         { path: '/app/carteiras', label: 'Carteiras B3', icon: <Briefcase size={18} /> },
         { path: '/app/imposto', label: 'Imposto de Renda', icon: <FileText size={18} /> },
